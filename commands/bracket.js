@@ -5,15 +5,17 @@ const {
 } = require('discord.js');
 const { downloader, delOldFile } = require('../tools/svg-png');
 
-function builder() {
+function builder(timeStamp) {
   console.log(`Generating new attachment builder...`.blue);
-  const file = new AttachmentBuilder('./bracket.png');
+  const file = new AttachmentBuilder(
+    `bracket-${timeStamp}.png`,
+  );
 
   const exampleEmbed = {
     title: 'Live Tournament Bracket',
     url: 'https://challonge.com/SmashFate2_1',
     image: {
-      url: 'attachment://bracket.png',
+      url: `attachment://bracket-${timeStamp}.png`,
     },
   };
   return { file, exampleEmbed };
@@ -44,8 +46,12 @@ async function delay(delayInMinutes) {
 async function cleanup() {
   try {
     delOldFile('input.svg');
-    delOldFile('bracket.png');
-    await downloader('https://challonge.com/SmashFate2_1.svg', 'input.svg');
+    //delOldFile('*.png'); Still need to figure out how to do this
+    //delOldFile('bracket.png');
+    return await downloader(
+      'https://challonge.com/SmashFate2_1.svg',
+      'input.svg',
+    );
   } catch (err) {
     console.error(err);
   }
@@ -75,8 +81,9 @@ module.exports = {
         //Get the number of repetitions
         const duration = interaction.options.getInteger('duration');
 
-        await cleanup();
-        const { exampleEmbed, file } = builder();
+        const timeStamp = await cleanup();
+        console.log(timeStamp);
+        const { exampleEmbed, file } = builder(timeStamp);
         await message.edit({
           embeds: [exampleEmbed],
           files: [file],

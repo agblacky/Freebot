@@ -20,12 +20,13 @@ const downloader = (url, filename) => {
 
 //Convert SVG to PNG
 function svgToPng(resolve) {
+  const timeStamp = new Date().getTime();
   sharp('input.svg')
     .png()
     .flatten({ background: '#fff' })
-    .toFile('bracket.png');
+    .toFile(`bracket-${timeStamp}.png`);
   setTimeout(() => {
-    resolve();
+    resolve(timeStamp);
   }, 50);
 }
 
