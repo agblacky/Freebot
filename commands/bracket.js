@@ -6,6 +6,7 @@ const {
 const { downloader, delOldFile } = require('../tools/svg-png');
 
 function builder() {
+  console.log(`Generating new attachment builder...`.blue);
   const file = new AttachmentBuilder('./bracket.png');
 
   const exampleEmbed = {
@@ -70,12 +71,13 @@ module.exports = {
           PermissionsBitField.Flags.ManageChannels,
         )
       ) {
+        const message = await interaction.deferReply();
         //Get the number of repetitions
         const duration = interaction.options.getInteger('duration');
 
         await cleanup();
         const { exampleEmbed, file } = builder();
-        const message = await interaction.reply({
+        await message.edit({
           embeds: [exampleEmbed],
           files: [file],
         });

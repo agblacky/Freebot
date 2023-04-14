@@ -11,7 +11,7 @@ const downloader = (url, filename) => {
       res.pipe(fileStream);
       fileStream.on('finish', function () {
         fileStream.close();
-        console.log('Got new file!');
+        console.log('Got new file!'.green);
         svgToPng(resolve);
       });
     });
@@ -38,7 +38,7 @@ function delOldFile(filepath) {
     //Delete old file
     fs.unlink(filepath, function (err) {
       if (err) return console.log(err);
-      console.log('File deleted successfully!');
+      console.log('File deleted successfully!'.red);
     });
   });
 }
