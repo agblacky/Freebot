@@ -2,6 +2,7 @@ const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const bracket = require('./commands/bracket');
 const hentai = require('./commands/hentai');
 const dotenv = require('dotenv');
+require('colors');
 dotenv.config();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });

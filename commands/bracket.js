@@ -3,16 +3,17 @@ const {
   AttachmentBuilder,
   PermissionsBitField,
 } = require('discord.js');
-const { downloader, delOldFile } = require('../tools/svg-png');
+const { downloader, delOldFiles } = require('../tools/svg-png');
 
-function builder() {
-  const file = new AttachmentBuilder('./bracket.png');
+function builder(timeStamp) {
+  console.log(`Generating new attachment builder...`.blue);
+  const file = new AttachmentBuilder(`./img/bracket-${timeStamp}.png`);
 
   const exampleEmbed = {
     title: 'Live Tournament Bracket',
     url: 'https://challonge.com/SmashFate2_1',
     image: {
-      url: 'attachment://bracket.png',
+      url: `attachment://bracket-${timeStamp}.png`,
     },
   };
   return { file, exampleEmbed };
@@ -42,9 +43,14 @@ async function delay(delayInMinutes) {
 //Cleaning up old and getting new bracket
 async function cleanup() {
   try {
-    delOldFile('input.svg');
-    delOldFile('bracket.png');
-    await downloader('https://challonge.com/SmashFate2_1.svg', 'input.svg');
+    //delOldFile('input.svg');
+    //delOldFile('*.png'); Still need to figure out how to do this
+    //delOldFile('bracket.png');
+    delOldFiles('./img/');
+    return await downloader(
+      'https://challonge.com/SmashFate2_1.svg',
+      'input.svg',
+    );
   } catch (err) {
     console.error(err);
   }
@@ -70,12 +76,14 @@ module.exports = {
           PermissionsBitField.Flags.ManageChannels,
         )
       ) {
+        const message = await interaction.deferReply();
         //Get the number of repetitions
         const duration = interaction.options.getInteger('duration');
 
-        await cleanup();
-        const { exampleEmbed, file } = builder();
-        const message = await interaction.reply({
+        const timeStamp = await cleanup();
+        console.log(timeStamp);
+        const { exampleEmbed, file } = builder(timeStamp);
+        await message.edit({
           embeds: [exampleEmbed],
           files: [file],
         });
