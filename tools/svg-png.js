@@ -7,7 +7,7 @@ const downloader = (url, filename) => {
   //Create a new promise to wait for the download to finish
   return new Promise((resolve, reject) => {
     https.get(url, function (res) {
-      const fileStream = fs.createWriteStream(filename);
+      const fileStream = fs.createWriteStream(`./img/${filename}`);
       res.pipe(fileStream);
       fileStream.on('finish', function () {
         fileStream.close();
@@ -21,27 +21,40 @@ const downloader = (url, filename) => {
 //Convert SVG to PNG
 function svgToPng(resolve) {
   const timeStamp = new Date().getTime();
-  sharp('input.svg')
+  sharp('./img/input.svg')
     .png()
     .flatten({ background: '#fff' })
-    .toFile(`bracket-${timeStamp}.png`);
+    .toFile(`./img/bracket-${timeStamp}.png`);
   setTimeout(() => {
     resolve(timeStamp);
   }, 50);
 }
 
-function delOldFile(filepath) {
-  //Check if file exists
-  fs.stat(filepath, function (err) {
-    if (err) {
-      return console.error(err);
+// function delOldFile(filepath) {
+//   //Check if file exists
+//   fs.stat(filepath, function (err) {
+//     if (err) {
+//       return console.error(err);
+//     }
+//     //Delete old file
+//     fs.unlink(filepath, function (err) {
+//       if (err) return console.log(err);
+//       console.log('File deleted successfully!'.red);
+//     });
+//   });
+// }
+
+function delOldFiles(folderPath) {
+  fs.readdir(folderPath, (err, files) => {
+    if (err) throw err;
+
+    for (const file of files) {
+      fs.unlink(`${folderPath}/${file}`, err => {
+        if (err) throw err;
+        console.log('Files deleted successfully!'.red);
+      });
     }
-    //Delete old file
-    fs.unlink(filepath, function (err) {
-      if (err) return console.log(err);
-      console.log('File deleted successfully!'.red);
-    });
   });
 }
 
-module.exports = { downloader, delOldFile };
+module.exports = { downloader, delOldFiles };

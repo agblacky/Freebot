@@ -3,13 +3,11 @@ const {
   AttachmentBuilder,
   PermissionsBitField,
 } = require('discord.js');
-const { downloader, delOldFile } = require('../tools/svg-png');
+const { downloader, delOldFiles } = require('../tools/svg-png');
 
 function builder(timeStamp) {
   console.log(`Generating new attachment builder...`.blue);
-  const file = new AttachmentBuilder(
-    `bracket-${timeStamp}.png`,
-  );
+  const file = new AttachmentBuilder(`./img/bracket-${timeStamp}.png`);
 
   const exampleEmbed = {
     title: 'Live Tournament Bracket',
@@ -45,9 +43,10 @@ async function delay(delayInMinutes) {
 //Cleaning up old and getting new bracket
 async function cleanup() {
   try {
-    delOldFile('input.svg');
+    //delOldFile('input.svg');
     //delOldFile('*.png'); Still need to figure out how to do this
     //delOldFile('bracket.png');
+    delOldFiles('./img/');
     return await downloader(
       'https://challonge.com/SmashFate2_1.svg',
       'input.svg',
