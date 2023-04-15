@@ -57,4 +57,17 @@ function delOldFiles(folderPath) {
   });
 }
 
-module.exports = { downloader, delOldFiles };
+//Cleaning up old and getting new bracket
+async function cleanup() {
+  try {
+    delOldFiles('./img/');
+    return await downloader(
+      'https://challonge.com/SmashFate2_1.svg',
+      'input.svg',
+    );
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+module.exports = { cleanup };
