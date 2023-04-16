@@ -3,32 +3,32 @@ const {
   AttachmentBuilder,
   PermissionsBitField,
 } = require('discord.js');
-const { downloader, delOldFiles } = require('../tools/svg-png');
+const { cleanup } = require('../tools/svg-png');
 
 function builder(timeStamp) {
   console.log(`Generating new attachment builder...`.blue);
-  const file = new AttachmentBuilder(`./img/bracket-${timeStamp}.png`);
+  const bracket = new AttachmentBuilder(`./img/bracket-${timeStamp}.png`);
 
-  const exampleEmbed = {
+  const bracketEmbed = {
     title: 'Live Tournament Bracket',
     url: 'https://challonge.com/SmashFate2_1',
     image: {
       url: `attachment://bracket-${timeStamp}.png`,
     },
   };
-  return { file, exampleEmbed };
+  return { bracket, bracketEmbed };
 }
 
 //Refreshing the bracket
 async function editMessageWithDelay(message, delayInMinutes) {
   try {
+    console.log(new Date().toTimeString());
+    const timeStamp = await cleanup();
+    const { bracketEmbed, bracket } = builder(timeStamp);
+    // Edit the message with the new content and bracket attachment
+    await message.edit({ embeds: [bracketEmbed], files: [bracket] });
     // Pause the function for the specified delay period
     await delay(delayInMinutes);
-
-    await cleanup();
-    const { exampleEmbed, file } = builder();
-    // Edit the message with the new content and file attachment
-    await message.edit({ embeds: [exampleEmbed], files: [file] });
   } catch (err) {
     console.error(err);
   }
@@ -38,22 +38,6 @@ async function delay(delayInMinutes) {
   return new Promise(resolve =>
     setTimeout(resolve, delayInMinutes * 60 * 1000),
   );
-}
-
-//Cleaning up old and getting new bracket
-async function cleanup() {
-  try {
-    //delOldFile('input.svg');
-    //delOldFile('*.png'); Still need to figure out how to do this
-    //delOldFile('bracket.png');
-    delOldFiles('./img/');
-    return await downloader(
-      'https://challonge.com/SmashFate2_1.svg',
-      'input.svg',
-    );
-  } catch (err) {
-    console.error(err);
-  }
 }
 
 module.exports = {
@@ -80,16 +64,15 @@ module.exports = {
         //Get the number of repetitions
         const duration = interaction.options.getInteger('duration');
 
-        const timeStamp = await cleanup();
-        console.log(timeStamp);
-        const { exampleEmbed, file } = builder(timeStamp);
-        await message.edit({
-          embeds: [exampleEmbed],
-          files: [file],
-        });
+        // const timeStamp = await cleanup();
+        // const { bracketEmbed, bracket } = builder(timeStamp);
+        // await message.edit({
+        //   embeds: [bracketEmbed],
+        //   files: [bracket],
+        // });
 
         //Converting the duration into repetitions without going below 0
-        const repetitions = Math.max(Math.floor(duration / 5) - 1, 0);
+        const repetitions = Math.max(Math.floor(duration / 5) /*- 1*/, 0);
         //Loop through the repetitions
         for (let rep = 0; rep < repetitions; rep++) {
           await editMessageWithDelay(message, 5);
