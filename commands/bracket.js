@@ -22,7 +22,7 @@ function builder(timeStamp) {
 //Refreshing the bracket
 async function editMessageWithDelay(message, delayInMinutes) {
   try {
-    console.log(new Date().toTimeString());
+    console.log(new Date().toTimeString().yellow.inverse);
     const timeStamp = await cleanup();
     const { bracketEmbed, bracket } = builder(timeStamp);
     // Edit the message with the new content and bracket attachment
@@ -43,15 +43,15 @@ async function delay(delayInMinutes) {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('bracket')
-    .setDescription('Sends the tournament bracket')
-    .addIntegerOption(option =>
-      option
-        .setName('duration')
-        .setDescription('How long the bracket refreshes in minutes.')
-        .setMinValue(0)
-        .setMaxValue(120)
-        .setRequired(true),
-    ),
+    .setDescription('Sends the tournament bracket'),
+  // .addIntegerOption(option =>
+  //   option
+  //     .setName('duration')
+  //     .setDescription('How long the bracket refreshes in minutes.')
+  //     .setMinValue(0)
+  //     .setMaxValue(120)
+  //     .setRequired(true),
+  // )
   async execute(interaction) {
     try {
       //Check for permissions
@@ -61,20 +61,15 @@ module.exports = {
         )
       ) {
         const message = await interaction.deferReply();
-        //Get the number of repetitions
-        const duration = interaction.options.getInteger('duration');
 
-        // const timeStamp = await cleanup();
-        // const { bracketEmbed, bracket } = builder(timeStamp);
-        // await message.edit({
-        //   embeds: [bracketEmbed],
-        //   files: [bracket],
-        // });
+        //Get the number of repetitions
+        //const duration = interaction.options.getInteger('duration');
 
         //Converting the duration into repetitions without going below 0
-        const repetitions = Math.max(Math.floor(duration / 5) /*- 1*/, 0);
+        //const repetitions = Math.max(Math.floor(duration / 5) /*- 1*/, 0);
+
         //Loop through the repetitions
-        for (let rep = 0; rep < repetitions; rep++) {
+        for (let rep = 0; rep < 3; rep++) {
           await editMessageWithDelay(message, 5);
         }
       } else {
