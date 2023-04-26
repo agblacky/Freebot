@@ -1,10 +1,11 @@
-const { parseString } = require('xml2js');
 const axios = require('axios');
-
-//Gets Image URL
+const { filterList, tagList } = require('../config/config.json');
+//Gets Image via API endpoint
 async function getImage() {
   let { data } = await axios({
-    url: 'https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=100&json=1',
+    url: `https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=100&json=1&tags=${tagList.join(
+      '+',
+    )}+-${filterList.join('+-')}`,
     method: 'GET',
   });
   const { file_url, preview_url } =
