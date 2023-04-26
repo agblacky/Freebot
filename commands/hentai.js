@@ -1,3 +1,6 @@
+//WARNING NSFW COMMAND
+//This command gets a random image via rule34 api with pre-defined filters while encouraging "normal" considered tags, which will be continuously updated 
+//This command is intended to aquire API knowledge and is not intended to be used in work environments
 const { SlashCommandBuilder } = require('discord.js');
 const { getImage } = require('../tools/getimg');
 
