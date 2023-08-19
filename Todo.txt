@@ -1,1 +1,2 @@
 Resending message every 15min
+Video player
