@@ -1,6 +1,7 @@
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const bracket = require('./commands/bracket');
 const hentai = require('./commands/hentai');
+const getPerms = require('./commands/getPerms');
 const dotenv = require('dotenv');
 require('colors');
 dotenv.config();
@@ -15,7 +16,6 @@ client.once(Events.ClientReady, c => {
 client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return;
   const command = interaction.client.commands.get(interaction.commandName);
-
   if (!command) {
     console.error(`No command matching ${interaction.commandName} was found.`);
     return;
@@ -42,5 +42,6 @@ client.on(Events.InteractionCreate, async interaction => {
 client.commands = new Collection();
 client.commands.set(bracket.data.name, bracket);
 client.commands.set(hentai.data.name, hentai);
+client.commands.set(getPerms.data.name, getPerms);
 
 client.login(process.env.TOKEN);
